@@ -1,30 +1,32 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import type { Session } from '@supabase/supabase-js'; // <-- 1. Impor tipe Session
 
-// Komponen ini menerima 'session' sebagai prop
-export default function Dashboard({ session }) {
+// 2. Gunakan tipe Session untuk mendefinisikan props
+export default function Dashboard({ session }: { session: Session }) {
   const [links, setLinks] = useState([]);
   const [newTitle, setNewTitle] = useState('');
   const [newUrl, setNewUrl] = useState('');
   const { user } = session;
 
   useEffect(() => {
-    getLinks();
+    // Hanya panggil getLinks jika user sudah ada
+    if (user) {
+      getLinks();
+    }
   }, [user]);
 
-  // Mengambil link HANYA milik pengguna yang sedang login
   async function getLinks() {
     const { data, error } = await supabase
       .from('links')
       .select('*')
-      .eq('user_id', user.id); // <-- Filter berdasarkan user_id
+      .eq('user_id', user.id);
 
     if (error) console.error('Error fetching links:', error);
-    else setLinks(data);
+    else setLinks(data || []); // Pastikan memberi fallback array kosong
   }
 
-  // Menambah link baru dengan user_id yang sesuai
   async function handleAddLink() {
     if (newTitle.trim() === '' || newUrl.trim() === '') return;
 
@@ -35,13 +37,12 @@ export default function Dashboard({ session }) {
     if (error) {
       console.error('Error adding link:', error);
     } else {
-      await getLinks(); // Refresh daftar link
+      await getLinks();
       setNewTitle('');
       setNewUrl('');
     }
   }
 
-  // Menghapus link
   async function handleDeleteLink(id) {
     const { error } = await supabase
       .from('links')
@@ -56,7 +57,6 @@ export default function Dashboard({ session }) {
     <div style={{ border: '1px solid #ccc', padding: '1.5rem', marginTop: '1rem', borderRadius: '8px' }}>
       <h4>Kelola Link Anda</h4>
 
-      {/* Form untuk menambah link baru */}
       <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
         <input
           type="text"
@@ -75,7 +75,6 @@ export default function Dashboard({ session }) {
         <button onClick={handleAddLink} style={{ padding: '8px 16px' }}>Tambah</button>
       </div>
 
-      {/* Daftar Link */}
       <div>
         {links.length > 0 ? (
           links.map((link) => (
