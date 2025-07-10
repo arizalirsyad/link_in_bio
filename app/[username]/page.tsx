@@ -1,6 +1,6 @@
 import { supabase } from '../../lib/supabaseClient';
 import { notFound } from 'next/navigation';
-import PublicLinkButton from '../../components/PublicLinkButton';
+import PublicLinkButton from '../components/PublicLinkButton';
 
 // Definisikan tipe untuk props halaman ini
 type Props = {
