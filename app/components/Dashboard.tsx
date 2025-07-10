@@ -1,17 +1,23 @@
 "use client";
 import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabaseClient';
-import type { Session } from '@supabase/supabase-js'; // <-- 1. Impor tipe Session
+import type { Session } from '@supabase/supabase-js';
 
-// 2. Gunakan tipe Session untuk mendefinisikan props
+// Definisikan tipe untuk satu objek Link
+type Link = {
+  id: number;
+  title: string;
+  url: string;
+};
+
 export default function Dashboard({ session }: { session: Session }) {
-  const [links, setLinks] = useState([]);
+  // Beri tahu useState bahwa ini adalah array dari Link
+  const [links, setLinks] = useState<Link[]>([]); 
   const [newTitle, setNewTitle] = useState('');
   const [newUrl, setNewUrl] = useState('');
   const { user } = session;
 
   useEffect(() => {
-    // Hanya panggil getLinks jika user sudah ada
     if (user) {
       getLinks();
     }
@@ -24,7 +30,7 @@ export default function Dashboard({ session }: { session: Session }) {
       .eq('user_id', user.id);
 
     if (error) console.error('Error fetching links:', error);
-    else setLinks(data || []); // Pastikan memberi fallback array kosong
+    else setLinks(data || []);
   }
 
   async function handleAddLink() {
@@ -43,7 +49,7 @@ export default function Dashboard({ session }: { session: Session }) {
     }
   }
 
-  async function handleDeleteLink(id) {
+  async function handleDeleteLink(id: number) { // Tambahkan tipe untuk id
     const { error } = await supabase
       .from('links')
       .delete()
@@ -70,25 +76,4 @@ export default function Dashboard({ session }: { session: Session }) {
           value={newUrl}
           onChange={(e) => setNewUrl(e.target.value)}
           placeholder="https://..."
-          style={{ padding: '8px', flexGrow: 2 }}
-        />
-        <button onClick={handleAddLink} style={{ padding: '8px 16px' }}>Tambah</button>
-      </div>
-
-      <div>
-        {links.length > 0 ? (
-          links.map((link) => (
-            <div key={link.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f4f4f4', padding: '10px', margin: '8px 0', borderRadius: '4px' }}>
-              <span><strong>{link.title}</strong>: {link.url}</span>
-              <button onClick={() => handleDeleteLink(link.id)} style={{ background: '#ff4d4d', color: 'white', border: 'none', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer' }}>
-                Hapus
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>Anda belum memiliki link. Silakan tambahkan.</p>
-        )}
-      </div>
-    </div>
-  );
-}
+          style={{ padding: '8px', flexGrow: 2
