@@ -2,27 +2,30 @@ import { supabase } from '../../lib/supabaseClient';
 import { notFound } from 'next/navigation';
 import PublicLinkButton from '../components/PublicLinkButton';
 
-// Definisikan tipe untuk props halaman ini
+// Definisikan tipe untuk props halaman ini secara terpisah
 type Props = {
   params: {
     username: string;
   };
 };
 
-// Gunakan tipe 'Props' yang sudah didefinisikan
+// Gunakan tipe 'Props' yang sudah didefinisikan di sini
 export default async function UserProfile({ params }: Props) {
   const username = params.username;
 
+  // 1. Cari profil pengguna berdasarkan username
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
     .eq('username', username)
     .single();
 
+  // Jika profil tidak ditemukan, tampilkan halaman 404 Not Found
   if (!profile) {
     notFound();
   }
 
+  // 2. Jika profil ditemukan, cari semua link milik pengguna tersebut
   const { data: links } = await supabase
     .from('links')
     .select('*')
