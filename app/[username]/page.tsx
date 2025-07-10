@@ -2,7 +2,7 @@ import { supabase } from '../../lib/supabaseClient';
 import { notFound } from 'next/navigation';
 import PublicLinkButton from '../components/PublicLinkButton'; // <-- 1. Import komponen baru
 
-export default async function UserProfile({ params }) {
+export default async function UserProfile({ params }: { params: { username: string } }) {
   const username = params.username;
 
   const { data: profile } = await supabase
