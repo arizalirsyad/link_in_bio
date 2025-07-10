@@ -2,16 +2,10 @@ import { supabase } from '../../lib/supabaseClient';
 import { notFound } from 'next/navigation';
 import PublicLinkButton from '../components/PublicLinkButton';
 
-// Definisikan tipe untuk props halaman ini secara terpisah
-type Props = {
-  params: {
-    username: string;
-  };
-};
-
-// Gunakan tipe 'Props' yang sudah didefinisikan di sini
-export default async function UserProfile({ params }: Props) {
-  const username = params.username;
+// Kita tidak membuat 'type Props' terpisah, tapi langsung definisikan di sini.
+export default async function UserProfile(props: { params: { username: string } }) {
+  // Ambil username dari props.params
+  const username = props.params.username;
 
   // 1. Cari profil pengguna berdasarkan username
   const { data: profile } = await supabase
