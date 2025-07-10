@@ -29,5 +29,5 @@ export default async function UserProfilePage({ params }: Props) {
     .eq('user_id', profile.id);
 
   // Setelah data didapat, kita lempar ke komponen client untuk ditampilkan
-  return <UserProfileClient profile={profile} links={links} />;
+    return <UserProfileClient profile={profile} links={links || []} />;
 }
