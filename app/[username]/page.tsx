@@ -1,8 +1,16 @@
 import { supabase } from '../../lib/supabaseClient';
 import { notFound } from 'next/navigation';
-import PublicLinkButton from '../components/PublicLinkButton'; // <-- 1. Import komponen baru
+import PublicLinkButton from '../../components/PublicLinkButton';
 
-export default async function UserProfile({ params }: { params: { username: string } }) {
+// Definisikan tipe untuk props halaman ini
+type Props = {
+  params: {
+    username: string;
+  };
+};
+
+// Gunakan tipe 'Props' yang sudah didefinisikan
+export default async function UserProfile({ params }: Props) {
   const username = params.username;
 
   const { data: profile } = await supabase
@@ -27,7 +35,6 @@ export default async function UserProfile({ params }: { params: { username: stri
 
       <div style={{ marginTop: '2rem' }}>
         {links && links.map(link => (
-          // 2. Ganti tag <a> dengan komponen baru
           <PublicLinkButton key={link.id} link={link} />
         ))}
       </div>
