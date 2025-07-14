@@ -4,10 +4,9 @@ import { supabase } from '../lib/supabaseClient';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import Dashboard from './components/Dashboard';
-import type { Session } from '@supabase/supabase-js'; // <-- Impor tipe Session
+import type { Session } from '@supabase/supabase-js';
 
 export default function Home() {
-  // Beri tahu useState bahwa state ini bisa Session atau null
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
@@ -21,15 +20,17 @@ export default function Home() {
 
     return () => subscription.unsubscribe();
   }, []);
-
+  
   async function handleLogout() {
     await supabase.auth.signOut();
   }
 
+  // Jika belum login, tampilkan form Auth
   if (!session) {
     return (
-      <div style={{ width: '100%', maxWidth: '420px', margin: '100px auto' }}>
-        <p>Silakan Login atau Sign Up</p>
+      // Styling menggunakan Tailwind
+      <div className="container mx-auto max-w-md p-8 mt-20">
+        <p className="text-center mb-4">Silakan Login atau Sign Up</p>
         <Auth
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
@@ -39,19 +40,24 @@ export default function Home() {
     );
   }
 
+  // Jika sudah login, tampilkan dasbor
   return (
-    <div style={{ fontFamily: 'sans-serif', textAlign: 'center', margin: '2rem auto', maxWidth: '800px' }}>
-      <h2>Selamat Datang!</h2>
-      <p>Anda login sebagai: <strong>{session.user.email}</strong></p>
-
+    // Styling menggunakan Tailwind
+    <main className="container mx-auto max-w-4xl p-4 text-center mt-8">
+      <h2 className="text-2xl font-semibold">Selamat Datang!</h2>
+      <p className="text-gray-600 mb-6">
+        Anda login sebagai: <strong>{session.user.email}</strong>
+      </p>
+      
       <Dashboard session={session} />
 
       <button 
         onClick={handleLogout}
-        style={{ marginTop: '2rem', padding: '10px 20px', background: 'crimson', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+        // Kelas-kelas Tailwind untuk tombol
+        className="mt-8 px-5 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
       >
         Logout
       </button>
-    </div>
+    </main>
   );
 }

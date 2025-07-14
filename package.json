@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "tailwind:init": "node_modules/.bin/tailwindcss init -p"
   },
   "dependencies": {
     "@supabase/auth-ui-react": "^0.4.7",
@@ -21,7 +22,9 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "tailwindcss": "^4",
+  "postcss": "^8",
+  "tailwindcss": "^3.4.1",
+  "autoprefixer": "^10.4.1",
     "typescript": "^5"
   }
 }
