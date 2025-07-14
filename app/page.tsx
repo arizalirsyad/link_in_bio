@@ -3,10 +3,12 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabaseClient';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
-import Dashboard from './components/Dashboard'; // <-- 1. Import Dashboard
+import Dashboard from './components/Dashboard';
+import type { Session } from '@supabase/supabase-js'; // <-- Impor tipe Session
 
 export default function Home() {
-  const [session, setSession] = useState(null);
+  // Beri tahu useState bahwa state ini bisa Session atau null
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -42,7 +44,6 @@ export default function Home() {
       <h2>Selamat Datang!</h2>
       <p>Anda login sebagai: <strong>{session.user.email}</strong></p>
 
-      {/* 2. Ganti placeholder dengan komponen Dashboard, lempar session sebagai prop */}
       <Dashboard session={session} />
 
       <button 
