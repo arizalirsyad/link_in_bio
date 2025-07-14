@@ -1,8 +1,16 @@
-"use client"; // <-- Ini menandakan sebagai Client Component
+"use client";
 
-export default function PublicLinkButton({ link }) {
+// Definisikan bentuk 'link' yang diterima komponen ini
+type Link = {
+  id: number;
+  title: string;
+  url: string;
+};
+
+// Gunakan tipe yang sudah didefinisikan untuk props
+export default function PublicLinkButton({ link }: { link: Link }) {
   return (
-    <a 
+    <a
       href={link.url}
       target="_blank"
       rel="noopener noreferrer"
