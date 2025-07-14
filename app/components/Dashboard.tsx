@@ -8,20 +8,20 @@ type Link = {
   id: number;
   title: string;
   url: string;
+  user_id: string;
+  created_at: string;
 };
 
 // Gunakan tipe Session untuk mendefinisikan props
 export default function Dashboard({ session }: { session: Session }) {
-  const [links, setLinks] = useState<Link[]>([]); 
+  // Beri tahu useState bahwa ini adalah array dari Link
+  const [links, setLinks] = useState<Link[]>([]);
   const [newTitle, setNewTitle] = useState('');
   const [newUrl, setNewUrl] = useState('');
   const { user } = session;
 
   // Fungsi untuk mengambil data dari Supabase
-  async function getLinks() {
-    // Pastikan user ada sebelum query
-    if (!user) return;
-
+  const getLinks = async () => {
     const { data, error } = await supabase
       .from('links')
       .select('*')
@@ -32,7 +32,7 @@ export default function Dashboard({ session }: { session: Session }) {
     } else {
       setLinks(data || []);
     }
-  }
+  };
 
   // Gunakan useEffect untuk memanggil getLinks saat komponen dimuat
   useEffect(() => {
@@ -40,24 +40,26 @@ export default function Dashboard({ session }: { session: Session }) {
   }, [user]);
 
   // Fungsi untuk menambah link baru
-  async function handleAddLink() {
-    if (!user || newTitle.trim() === '' || newUrl.trim() === '') return;
+  const handleAddLink = async () => {
+    if (newTitle.trim() === '' || newUrl.trim() === '') return;
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('links')
-      .insert([{ title: newTitle, url: newUrl, user_id: user.id }]);
+      .insert([{ title: newTitle, url: newUrl, user_id: user.id }])
+      .select(); // Meminta Supabase mengembalikan data yang baru dibuat
 
     if (error) {
       console.error('Error adding link:', error);
-    } else {
-      await getLinks();
+    } else if (data) {
+      // Optimistic UI: langsung tambahkan ke state tanpa fetch ulang
+      setLinks([...links, data[0]]);
       setNewTitle('');
       setNewUrl('');
     }
-  }
+  };
   
   // Fungsi untuk menghapus link
-  async function handleDeleteLink(id: number) {
+  const handleDeleteLink = async (id: number) => {
     const { error } = await supabase
       .from('links')
       .delete()
@@ -66,16 +68,13 @@ export default function Dashboard({ session }: { session: Session }) {
     if (error) {
       console.error('Error deleting link:', error);
     } else {
-      // Optimistic UI update
       setLinks(links.filter((link) => link.id !== id));
     }
-  }
+  };
 
-  // Bagian JSX untuk ditampilkan
   return (
     <div style={{ border: '1px solid #ccc', padding: '1.5rem', marginTop: '1rem', borderRadius: '8px' }}>
       <h4>Kelola Link Anda</h4>
-      
       <div style={{ display: 'flex', gap: '10px', marginBottom: '1rem' }}>
         <input
           type="text"

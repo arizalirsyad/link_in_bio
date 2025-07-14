@@ -1,12 +1,10 @@
 "use client";
+import PublicLinkButton from '../../components/PublicLinkButton';
 
-import PublicLinkButton from '../components/PublicLinkButton';
-
-// Definisikan "bentuk" data untuk Profile dan Link
+// Definisikan tipe untuk data yang diterima
 type Profile = {
-  id: string;
   username: string;
-  full_name: string;
+  full_name?: string | null;
 };
 
 type Link = {
@@ -15,11 +13,16 @@ type Link = {
   url: string;
 };
 
-// Gunakan tipe yang sudah didefinisikan untuk props
-export default function UserProfileClient({ profile, links }: { profile: Profile, links: Link[] }) {
+type Props = {
+  profile: Profile;
+  links: Link[];
+};
+
+// Komponen ini hanya menerima data yang sudah jadi, lalu menampilkannya
+export default function UserProfileClient({ profile, links }: Props) {
   return (
     <div style={{ fontFamily: 'sans-serif', textAlign: 'center', margin: '3rem auto', maxWidth: '600px' }}>
-      <h1 style={{ marginBottom: '0.5rem' }}>{profile.full_name || profile.username}</h1>
+      <h1>{profile.full_name || profile.username}</h1>
       <p>@{profile.username}</p>
 
       <div style={{ marginTop: '2rem' }}>

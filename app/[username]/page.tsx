@@ -1,16 +1,16 @@
 import { supabase } from '../../lib/supabaseClient';
 import { notFound } from 'next/navigation';
-import UserProfileClient from './UserProfileClient'; // <-- Impor komponen baru
+import UserProfileClient from './UserProfileClient';
 
-// Tipe ini kita gunakan di sini
-type Props = {
+// Tipe untuk props halaman
+type PageProps = {
   params: {
     username: string;
   };
 };
 
-// Halaman ini sekarang HANYA mengambil data
-export default async function UserProfilePage({ params }: Props) {
+// Halaman ini HANYA mengambil data
+export default async function UserProfilePage({ params }: PageProps) {
   const { username } = params;
 
   const { data: profile } = await supabase
@@ -28,6 +28,6 @@ export default async function UserProfilePage({ params }: Props) {
     .select('*')
     .eq('user_id', profile.id);
 
-  // Setelah data didapat, kita lempar ke komponen client untuk ditampilkan
-    return <UserProfileClient profile={profile} links={links || []} />;
+  // Lempar data ke komponen client untuk ditampilkan
+  return <UserProfileClient profile={profile} links={links || []} />;
 }
