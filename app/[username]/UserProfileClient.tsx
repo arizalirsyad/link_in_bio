@@ -1,5 +1,5 @@
 "use client";
-import PublicLinkButton from '../../components/PublicLinkButton';
+import PublicLinkButton from '../components/PublicLinkButton';
 
 // Definisikan tipe untuk data yang diterima
 type Profile = {
